@@ -1,5 +1,5 @@
 #### 1.	Create a python function to scrape Yelp data for 50 restaurants close to you OR Craigslist for the top 50 items of any topic interesting to you. Think about what data you want to scrape aside from the name and location. You must pick at least three other fields. You can use beautiful soup, selenium, scrapy, and/or splinter as possible.
-The python function for scraping is uploaded as : 
+The python function for scraping is uploaded as : https://github.com/SakshiDS/Week22/blob/main/webscraping_hw/yelp_flask.py
 
 #### 2.	Create a local API that calls your scrape function and stores the data when you call /scrape endpoint. The data you scrape should be viewable when you go to /all .
 App for this functionality is coded in the file: 
