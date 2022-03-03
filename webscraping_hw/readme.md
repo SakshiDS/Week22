@@ -1,6 +1,3 @@
-# Week22
-Webscraping
-
 #### 1.	Create a python function to scrape Yelp data for 50 restaurants close to you OR Craigslist for the top 50 items of any topic interesting to you. Think about what data you want to scrape aside from the name and location. You must pick at least three other fields. You can use beautiful soup, selenium, scrapy, and/or splinter as possible.
 The python function for scraping is uploaded as : https://github.com/SakshiDS/Week22/blob/main/webscraping_hw/yelp_scrap.py
 
