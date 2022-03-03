@@ -1,86 +1,96 @@
 #!/usr/bin/env python
 
 # Yelp search function
-def yelp_search():
+def yelp_scrap_50(zip_code):
 
-    # Load libraries
+
     from bs4 import BeautifulSoup as bs
     from splinter import Browser
     from webdriver_manager.chrome import ChromeDriverManager
     import pandas as pd
+    import numpy as np
     
-    # Empty lists to append
-    names_list = []
-    location_list = []
-    review_list = []
-    rating_list = []
-    comments_list = []
+    # Data I want to scrape for the restaurants
+    restaurant_name = []
+    hours = []
+    pricing = []
+    rating = []
+    no_of_reviews = []
     
-    # Enter your zip code into the url
-    my_zip = 63017
-    # url with zip appended
-    url=f'https://www.yelp.com/search?find_desc=Restaurants&find_loc={my_zip}'
+    # url updated with the zip code passed
+    url=f'https://www.yelp.com/search?find_desc=Restaurants&find_loc={zip_code}'
 
-    # executable path for a chrome driver
     executable_path = {'executable_path':ChromeDriverManager().install()}
     browser = Browser('chrome', **executable_path, headless=True) # True to keep browser closed in function
+    for page in range(0,50,10):
+        
+        pg_url = url + f'&start={page}'
     
-    # iterate through the browser end points
-    for next_ in range(10,60,10):
-        # get url
-        url_next = url + f'&start={next_}'
-
-        # Visit the yelp url in our browser
-        browser.visit(url_next)
-        # Parse url
+        browser.visit(pg_url)
+        
         soup = bs(browser.html, 'html.parser')
+        #rint(pg_url)
         
         try:
-            # Retaurant names
-            divs = soup.find_all("div", class_="businessName__09f24__EYSZE display--inline-block__09f24__fEDiJ border-color--default__09f24__NPAKY")
-            for a in divs:
-                names = a.find('a', class_='css-1422juy').text
-                names_list.append(names)
-
-            # Location 
-            ps = soup.find_all('p', class_='css-1gfe39a')
-            for span in ps:
-                neighborhood = span.find('span', class_='css-1e4fdj9').text
-                location_list.append(neighborhood)
-
-            # Reviews
-            revs = soup.find_all("div", class_="attribute__09f24__hqUj7 display--inline-block__09f24__fEDiJ border-color--default__09f24__NPAKY")
-            for rev in revs:
-                reviews = rev.find('span', class_="reviewCount__09f24__tnBk4 css-1e4fdj9").text
-                review_list.append(reviews)
-
-            # Restaurant rating
-            star_block = soup.find_all("div", class_="attribute__09f24__hqUj7 display--inline-block__09f24__fEDiJ margin-r1__09f24__rN_ga border-color--default__09f24__NPAKY")
-            for stars in star_block:
-                for star in stars:
-                    rating = star.div['aria-label']
-                    rating_list.append(rating)
-
-            # Comments
-            div = soup.find_all("div", {"class": "display--inline-block__09f24__fEDiJ margin-t1__09f24__w96jn border-color--default__09f24__NPAKY"})
-            for d in div:
-                var = d.find('p', class_='css-1e4fdj9')
-                if var is None:
-                    var = 'Not available'
-                    comments_list.append(var)
+            # Restaurant Name
+            name_divs = soup.find_all("div", class_="businessName__09f24__EYSZE display--inline-block__09f24__fEDiJ border-color--default__09f24__NPAKY")
+            for n in name_divs:
+                name = n.find('a', class_='css-1422juy').text
+                restaurant_name.append(name)
+            
+           #print(len(restaurant_name))
+            
+            # Hours of Operation
+            hour_divs = soup.find_all("div", class_="container__09f24__mpR8_ hoverable__09f24__wQ_on margin-t3__09f24__riq4X margin-b3__09f24__l9v5d padding-t3__09f24__TMrIW padding-r3__09f24__eaF7p padding-b3__09f24__S8R2d padding-l3__09f24__IOjKY border--top__09f24__exYYb border--right__09f24__X7Tln border--bottom__09f24___mg5X border--left__09f24__DMOkM border-color--default__09f24__NPAKY")
+            for h in hour_divs:
+                text = h.find('p', class_='css-1sufhje')
+                if text is None:
+                    text="Not Available"
+                    hours.append(text) 
                 else:
-                    var = var = d.find('p', class_='css-1e4fdj9').text
-                    comments_list.append(var) 
+                    text = h.find('p', class_='css-1sufhje').text
+                    hours.append(text)
+            
+           #print(len(hours))
+            
+            # Pricing Points    
+            para = soup.find_all('p', class_='css-1gfe39a')
+            for span in para:
+                price = span.find('span', class_='css-1e4fdj9').text
+                pricing.append(price)
+            
+           #print(len(pricing))
+            
+            # Restaurant rating
+            rating_divs = soup.find_all("div", class_="attribute__09f24__hqUj7 display--inline-block__09f24__fEDiJ margin-r1__09f24__rN_ga border-color--default__09f24__NPAKY")
+            for d in rating_divs:
+                for x in d:
+                    stars = x.div['aria-label']
+                    rating.append(stars)
+            
+           #print(len(rating))
+            
+            # Reviews
+            review_divs = soup.find_all("div", class_="attribute__09f24__hqUj7 display--inline-block__09f24__fEDiJ border-color--default__09f24__NPAKY")
+            for r in review_divs:
+                reviews = r.find('span', class_="reviewCount__09f24__tnBk4 css-1e4fdj9").text
+                no_of_reviews.append(reviews)
+            
+           #print(len(no_of_reviews))            
+            
+
 
         except Exception as e:
             print(e)
-    
-    # Create Data frame; limit to 50 restaurants
-    dictionary = {'Retaurant':names_list[0:50], 
-    'Neighborhood':location_list[0:50], 
-    'Total Reviews':review_list[0:50], 
-    'Rating':rating_list[0:50], 
-    'Comments':comments_list[0:50]}
+   
+    # Parsing data into dictionary
+    yelp_50_dic = {'Rank#':np.arange(1,51,1),
+    'Retaurant Name':restaurant_name, 
+    'Hours(Open/Close)':hours, 
+    'Pricing Point':pricing, 
+    'Rating':rating, 
+    'No. of Reviews':no_of_reviews}
 
-    df = pd.DataFrame.from_dict(dictionary)
-    return df   
+    yelp_50_df = pd.DataFrame.from_dict(yelp_50_dic)
+    yelp_50_df.set_index("Rank#",inplace=True)
+    return yelp_50_df
