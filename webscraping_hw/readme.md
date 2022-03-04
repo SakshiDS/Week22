@@ -24,3 +24,6 @@ On calling this end point the save json file with scraped data is loaded and pas
 * A data scraping tool can help automate the process of extracting information from websites, quickly and accurately. It can also make sure the data extracted is neatly organized, making it easier to analyze and use for other projects. 
 * 
 * In theory, we could manually cut and paste information from individual web pages into a spreadsheet or another document. But we’ll find this to be laborious, time-consuming, and error-prone if we’re trying to extract information from hundreds or thousands of pages. A web scraping tool automates the process, efficiently extracting the web data we need and formatting it in some kind of neatly-organized structure for storage and further processing.
+
+#### DataCamp's Webscraping in Python
+![image](https://user-images.githubusercontent.com/90784468/156760400-8aa42d83-1b39-48b3-bc79-04b47e4e5c4c.png)
